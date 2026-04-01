@@ -2,7 +2,7 @@
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 3,
 	"name": "next/related-posts-query",
-	"version": "0.2.0",
+	"version": "0.3.1",
 	"title": "NExT Related Posts Query",
 	"category": "theme",
 	"icon": "admin-post",

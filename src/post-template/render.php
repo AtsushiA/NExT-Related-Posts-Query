@@ -52,6 +52,8 @@ if ( null !== $block_gap && '' !== $block_gap ) {
 	$layout_style .= 'gap:' . $gap_value . ';';
 }
 
+$is_link = ! empty( $attributes['isLink'] );
+
 $wrapper_attributes = get_block_wrapper_attributes( array( 'style' => $layout_style ) );
 
 $output = '';
@@ -65,8 +67,9 @@ foreach ( $related_post_ids as $related_id ) {
 	$GLOBALS['post'] = $related_post; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 	setup_postdata( $related_post );
 
+	$item_output = '';
 	foreach ( $block->inner_blocks as $inner_block ) {
-		$output .= ( new WP_Block(
+		$item_output .= ( new WP_Block(
 			$inner_block->parsed_block,
 			array(
 				'postId'   => $related_id,
@@ -74,9 +77,22 @@ foreach ( $related_post_ids as $related_id ) {
 			)
 		) )->render();
 	}
+
+	if ( $is_link ) {
+		// Wrap each post item in a relative-positioned container and inject an
+		// absolutely-positioned overlay link so the entire card becomes clickable.
+		$item_url   = esc_url( get_permalink( $related_id ) );
+		$item_label = esc_attr( get_the_title( $related_id ) );
+		$output    .= '<div class="wp-block-next-post-template__item">';
+		$output    .= '<a class="wp-block-next-post-template__item-link" href="' . $item_url . '" aria-label="' . $item_label . '" tabindex="-1" aria-hidden="true"></a>';
+		$output    .= $item_output;
+		$output    .= '</div>';
+	} else {
+		$output .= $item_output;
+	}
 }
 
 wp_reset_postdata();
 
-// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- get_block_wrapper_attributes() is safely escaped.
+// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- get_block_wrapper_attributes() is safely escaped; $output is trusted WP_Block::render() output with escaped URLs.
 echo '<div ' . $wrapper_attributes . '>' . $output . '</div>';

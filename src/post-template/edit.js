@@ -8,6 +8,7 @@ import {
 import {
 	PanelBody,
 	RangeControl,
+	ToggleControl,
 	ToolbarGroup,
 	ToolbarButton,
 } from '@wordpress/components';
@@ -15,7 +16,7 @@ import { list, grid } from '@wordpress/icons';
 import { useMemo } from '@wordpress/element';
 
 export default function Edit( { attributes, setAttributes } ) {
-	const { layout = {} } = attributes;
+	const { layout = {}, isLink = false } = attributes;
 	const layoutType  = layout.type        || 'grid';
 	const columnCount = layout.columnCount || 3;
 
@@ -72,11 +73,11 @@ export default function Edit( { attributes, setAttributes } ) {
 				</ToolbarGroup>
 			</BlockControls>
 
-			{ layoutType === 'grid' && (
-				<InspectorControls>
-					<PanelBody
-						title={ __( 'Layout', 'next-related-posts-query' ) }
-					>
+			<InspectorControls>
+				<PanelBody
+					title={ __( 'Layout', 'next-related-posts-query' ) }
+				>
+					{ layoutType === 'grid' && (
 						<RangeControl
 							label={ __(
 								'Columns',
@@ -94,9 +95,23 @@ export default function Edit( { attributes, setAttributes } ) {
 							min={ 1 }
 							max={ 4 }
 						/>
-					</PanelBody>
-				</InspectorControls>
-			) }
+					) }
+					<ToggleControl
+						label={ __(
+							'ブロックリンクを使用する',
+							'next-related-posts-query'
+						) }
+						help={ isLink
+							? __( '各投稿カード全体がリンクになります。', 'next-related-posts-query' )
+							: __( '有効にすると投稿カード全体がクリッカブルになります。', 'next-related-posts-query' )
+						}
+						checked={ isLink }
+						onChange={ ( value ) =>
+							setAttributes( { isLink: value } )
+						}
+					/>
+				</PanelBody>
+			</InspectorControls>
 
 			<div { ...innerBlocksProps } />
 		</>
