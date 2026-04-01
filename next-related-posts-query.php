@@ -30,6 +30,45 @@ if ( ! function_exists( 'next_related_posts_query_block_init' ) ) {
 add_action( 'init', 'next_related_posts_query_block_init' );
 
 /**
+ * When the unitone theme is active, disable the standard blockGap control for
+ * next/post-template via theme.json user settings. The unitone "gap" control
+ * (supports.unitone.gap) handles spacing instead.
+ */
+if ( ! function_exists( 'next_related_posts_query_disable_block_gap_for_unitone' ) ) {
+	/**
+	 * Disables the standard blockGap control for next/post-template when unitone is active.
+	 *
+	 * @param WP_Theme_JSON_Data $theme_json The user-level theme.json data object.
+	 * @return WP_Theme_JSON_Data
+	 */
+	function next_related_posts_query_disable_block_gap_for_unitone( $theme_json ) {
+		$theme = wp_get_theme();
+		if (
+			'unitone' !== $theme->get_stylesheet() &&
+			'unitone' !== $theme->get_template()
+		) {
+			return $theme_json;
+		}
+
+		return $theme_json->update_with(
+			array(
+				'version'  => 2,
+				'settings' => array(
+					'blocks' => array(
+						'next/post-template' => array(
+							'spacing' => array(
+								'blockGap' => false,
+							),
+						),
+					),
+				),
+			)
+		);
+	}
+}
+add_filter( 'wp_theme_json_data_user', 'next_related_posts_query_disable_block_gap_for_unitone' );
+
+/**
  * REST API endpoint for fetching related posts in the editor.
  */
 if ( ! function_exists( 'next_related_posts_query_register_rest_route' ) ) {

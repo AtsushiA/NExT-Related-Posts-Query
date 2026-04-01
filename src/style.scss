@@ -6,7 +6,10 @@
 // Default gap comes from the theme's --wp--style--block-gap; render.php inlines an explicit gap
 // value when the user has set blockGap in the editor, overriding this rule.
 .wp-block-next-post-template {
-	gap: var(--wp--style--block-gap);
+	// Priority: unitone gap > our blockGap setting > theme blockGap.
+	// --unitone--gap is injected by the unitone theme's render_block filter.
+	// --next-post-template--gap is set by render.php when blockGap attribute is present.
+	gap: var(--unitone--gap, var(--next-post-template--gap, var(--wp--style--block-gap)));
 
 	@media (max-width: 600px) {
 		grid-template-columns: 1fr !important;

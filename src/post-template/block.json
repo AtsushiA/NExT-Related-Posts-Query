@@ -18,6 +18,10 @@
 		"isLink": {
 			"type": "boolean",
 			"default": false
+		},
+		"unitone": {
+			"type": "object",
+			"default": {}
 		}
 	},
 	"usesContext": [ "next/relatedPostIds" ],
@@ -27,6 +31,9 @@
 		"inserter": false,
 		"spacing": {
 			"blockGap": true
+		},
+		"unitone": {
+			"gap": true
 		}
 	},
 	"textdomain": "next-related-posts-query",

@@ -39,9 +39,9 @@ if ( 'grid' === $layout_type ) {
 	$layout_style = 'display:flex;flex-direction:column;';
 }
 
-// Add gap directly from the blockGap attribute so it works regardless of WordPress version.
-// WordPress may or may not set --wp--style--block-gap depending on version and layout support,
-// so we read the value ourselves and add gap as a concrete inline property.
+// Add gap as a CSS custom property so it can be overridden by unitone's --unitone--gap.
+
+
 $block_gap = isset( $attributes['style']['spacing']['blockGap'] )
 	? sanitize_text_field( $attributes['style']['spacing']['blockGap'] )
 	: null;
@@ -49,7 +49,7 @@ $block_gap = isset( $attributes['style']['spacing']['blockGap'] )
 if ( null !== $block_gap && '' !== $block_gap ) {
 	// Convert preset reference format "var:preset|spacing|30" → "var(--wp--preset--spacing--30)".
 	$gap_value = preg_replace( '/^var:preset\|([^|]+)\|(.+)$/', 'var(--wp--preset--$1--$2)', $block_gap );
-	$layout_style .= 'gap:' . $gap_value . ';';
+	$layout_style .= '--next-post-template--gap:' . $gap_value . ';';
 }
 
 $is_link = ! empty( $attributes['isLink'] );
