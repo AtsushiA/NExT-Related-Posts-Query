@@ -140,27 +140,45 @@ if ( ! function_exists( 'next_related_posts_query_build_tax_query' ) ) {
 			return array();
 		}
 
-		$taxonomies = get_object_taxonomies( $post->post_type, 'objects' );
-		$tax_query  = array();
+		$tax_query = array();
 
-		foreach ( $taxonomies as $taxonomy ) {
-			if ( ! $taxonomy->public ) {
-				continue;
+		if ( ! empty( $allowed_taxonomies ) ) {
+			// Use the specified taxonomies directly. This supports cross-post-type matching
+			// where the target post type may have different taxonomies than the current post.
+			foreach ( $allowed_taxonomies as $taxonomy_slug ) {
+				$taxonomy = get_taxonomy( $taxonomy_slug );
+				if ( ! $taxonomy || ! $taxonomy->public ) {
+					continue;
+				}
+
+				$terms = wp_get_post_terms( $post_id, $taxonomy_slug, array( 'fields' => 'ids' ) );
+
+				if ( ! is_wp_error( $terms ) && ! empty( $terms ) ) {
+					$tax_query[] = array(
+						'taxonomy' => $taxonomy_slug,
+						'field'    => 'term_id',
+						'terms'    => $terms,
+					);
+				}
 			}
+		} else {
+			// No taxonomy filter specified: use all public taxonomies of the current post's type.
+			$taxonomies = get_object_taxonomies( $post->post_type, 'objects' );
 
-			// Filter to selected taxonomies if specified.
-			if ( ! empty( $allowed_taxonomies ) && ! in_array( $taxonomy->name, $allowed_taxonomies, true ) ) {
-				continue;
-			}
+			foreach ( $taxonomies as $taxonomy ) {
+				if ( ! $taxonomy->public ) {
+					continue;
+				}
 
-			$terms = wp_get_post_terms( $post_id, $taxonomy->name, array( 'fields' => 'ids' ) );
+				$terms = wp_get_post_terms( $post_id, $taxonomy->name, array( 'fields' => 'ids' ) );
 
-			if ( ! is_wp_error( $terms ) && ! empty( $terms ) ) {
-				$tax_query[] = array(
-					'taxonomy' => $taxonomy->name,
-					'field'    => 'term_id',
-					'terms'    => $terms,
-				);
+				if ( ! is_wp_error( $terms ) && ! empty( $terms ) ) {
+					$tax_query[] = array(
+						'taxonomy' => $taxonomy->name,
+						'field'    => 'term_id',
+						'terms'    => $terms,
+					);
+				}
 			}
 		}
 

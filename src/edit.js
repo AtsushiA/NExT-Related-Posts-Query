@@ -12,7 +12,7 @@ import {
 	Placeholder,
 	Spinner,
 } from '@wordpress/components';
-import { useState, useEffect, useMemo } from '@wordpress/element';
+import { useState, useEffect, useMemo, useRef } from '@wordpress/element';
 import { useSelect } from '@wordpress/data';
 import apiFetch from '@wordpress/api-fetch';
 import './editor.scss';
@@ -84,13 +84,13 @@ export default function Edit( { attributes, setAttributes } ) {
 	);
 
 	const availableTaxonomies = useMemo( () => {
-		if ( ! sourceTaxonomies ) return [];
+		// When a specific post type is selected, show that type's taxonomies so the
+		// user can choose which taxonomy to use for cross-type relationship matching.
+		// When auto (same as current post type), show the current post's taxonomies.
 		if ( ! postType || postType === currentPostType ) {
-			return sourceTaxonomies;
+			return sourceTaxonomies || [];
 		}
-		if ( ! targetTaxonomies ) return sourceTaxonomies;
-		const targetSlugs = new Set( targetTaxonomies.map( ( t ) => t.slug ) );
-		return sourceTaxonomies.filter( ( t ) => targetSlugs.has( t.slug ) );
+		return targetTaxonomies || [];
 	}, [ postType, currentPostType, sourceTaxonomies, targetTaxonomies ] );
 
 	const postTypeOptions = useMemo( () => {
@@ -115,6 +115,16 @@ export default function Edit( { attributes, setAttributes } ) {
 		}
 		return options;
 	}, [ postTypes ] );
+
+	// Reset taxonomy selection when post type changes to avoid stale selections
+	// from a different post type's taxonomy list.
+	const prevPostTypeRef = useRef( postType );
+	useEffect( () => {
+		if ( prevPostTypeRef.current !== postType ) {
+			prevPostTypeRef.current = postType;
+			setAttributes( { taxonomies: [] } );
+		}
+	}, [ postType, setAttributes ] );
 
 	const taxonomiesKey = JSON.stringify( taxonomies );
 
