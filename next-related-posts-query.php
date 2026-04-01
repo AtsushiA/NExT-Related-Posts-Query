@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       NExT Related Posts Query Block
  * Description:       Displays related posts that share the same categories and taxonomies as the current post. Works like a Query Loop with inner blocks.
- * Version:           0.1.0
+ * Version:           0.2.0
  * Requires at least: 6.1
  * Requires PHP:      7.0
  * Author:            NExT-Season, WordPress Telex
@@ -61,6 +61,14 @@ if ( ! function_exists( 'next_related_posts_query_register_rest_route' ) ) {
 					'default'           => '',
 					'sanitize_callback' => 'sanitize_text_field',
 				),
+				'orderby'    => array(
+					'default'           => 'date',
+					'sanitize_callback' => 'sanitize_key',
+				),
+				'order'      => array(
+					'default'           => 'DESC',
+					'sanitize_callback' => 'sanitize_text_field',
+				),
 			),
 		) );
 	}
@@ -73,6 +81,11 @@ if ( ! function_exists( 'next_related_posts_query_rest_callback' ) ) {
 		$per_page         = (int) $request->get_param( 'per_page' );
 		$post_type_param  = $request->get_param( 'post_type' );
 		$taxonomies_param = $request->get_param( 'taxonomies' );
+		$allowed_orderby  = array( 'date', 'title' );
+		$orderby_param    = $request->get_param( 'orderby' );
+		$query_orderby    = in_array( $orderby_param, $allowed_orderby, true ) ? $orderby_param : 'date';
+		$order_param      = $request->get_param( 'order' );
+		$query_order      = 'ASC' === strtoupper( (string) $order_param ) ? 'ASC' : 'DESC';
 		$post             = get_post( $post_id );
 
 		if ( ! $post ) {
@@ -102,8 +115,8 @@ if ( ! function_exists( 'next_related_posts_query_rest_callback' ) ) {
 			'posts_per_page' => $per_page,
 			'post__not_in'   => array( $post_id ),
 			'tax_query'      => $tax_query,
-			'orderby'        => 'date',
-			'order'          => 'DESC',
+			'orderby'        => $query_orderby,
+			'order'          => $query_order,
 		);
 
 		$query = new WP_Query( $args );

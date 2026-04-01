@@ -9,3 +9,6 @@ build/
 
 # Telex artefact
 artefact.xml
+
+# WordPress.org readme (WordPress.org 配布用。README.md を正とする)
+readme.txt

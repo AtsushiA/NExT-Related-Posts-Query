@@ -43,7 +43,16 @@ export default function Edit( { attributes, setAttributes } ) {
 		numberOfPosts,
 		postType,
 		taxonomies,
+		orderby,
+		order,
 	} = attributes;
+
+	// Combined sort value used by the SelectControl: "orderby/order".
+	const sortValue = `${ orderby }/${ order }`;
+	const handleSortChange = ( value ) => {
+		const [ newOrderby, newOrder ] = value.split( '/' );
+		setAttributes( { orderby: newOrderby, order: newOrder } );
+	};
 
 	const [ relatedPosts, setRelatedPosts ] = useState( [] );
 	const [ isLoading, setIsLoading ]       = useState( true );
@@ -140,6 +149,8 @@ export default function Edit( { attributes, setAttributes } ) {
 		if ( postType ) params.set( 'post_type', postType );
 		if ( taxonomies.length > 0 )
 			params.set( 'taxonomies', taxonomies.join( ',' ) );
+		params.set( 'orderby', orderby );
+		params.set( 'order', order );
 
 		apiFetch( {
 			path: `/next-related-posts-query/v1/related/${ postId }?${ params.toString() }`,
@@ -153,7 +164,7 @@ export default function Edit( { attributes, setAttributes } ) {
 				setIsLoading( false );
 			} );
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [ postId, numberOfPosts, postType, taxonomiesKey ] );
+	}, [ postId, numberOfPosts, postType, taxonomiesKey, orderby, order ] );
 
 	const handleTaxonomyChange = ( slug, checked ) => {
 		if ( checked ) {
@@ -258,6 +269,29 @@ export default function Edit( { attributes, setAttributes } ) {
 						}
 						min={ 1 }
 						max={ 12 }
+					/>
+					<SelectControl
+						label={ __( '並び順', 'next-related-posts-query' ) }
+						value={ sortValue }
+						options={ [
+							{
+								label: __( '投稿順 (最新から)', 'next-related-posts-query' ),
+								value: 'date/DESC',
+							},
+							{
+								label: __( '投稿順 (過去から)', 'next-related-posts-query' ),
+								value: 'date/ASC',
+							},
+							{
+								label: __( 'A → Z', 'next-related-posts-query' ),
+								value: 'title/ASC',
+							},
+							{
+								label: __( 'Z → A', 'next-related-posts-query' ),
+								value: 'title/DESC',
+							},
+						] }
+						onChange={ handleSortChange }
 					/>
 				</PanelBody>
 			</InspectorControls>

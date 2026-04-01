@@ -25,6 +25,12 @@ $allowed_taxonomies = isset( $attributes['taxonomies'] ) && is_array( $attribute
 	? array_map( 'sanitize_key', $attributes['taxonomies'] )
 	: array();
 
+$allowed_orderby = array( 'date', 'title' );
+$query_orderby   = isset( $attributes['orderby'] ) && in_array( $attributes['orderby'], $allowed_orderby, true )
+	? $attributes['orderby']
+	: 'date';
+$query_order     = isset( $attributes['order'] ) && 'ASC' === $attributes['order'] ? 'ASC' : 'DESC';
+
 $current_post = get_post( $current_post_id );
 
 if ( ! $current_post ) {
@@ -50,8 +56,8 @@ $query_args = array(
 	'post__not_in'   => array( $current_post_id ),
 	// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
 	'tax_query'      => $tax_query,
-	'orderby'        => 'date',
-	'order'          => 'DESC',
+	'orderby'        => $query_orderby,
+	'order'          => $query_order,
 );
 
 $related_query = new WP_Query( $query_args );
