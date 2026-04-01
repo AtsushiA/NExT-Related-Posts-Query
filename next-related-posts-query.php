@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       NExT Related Posts Query Block
  * Description:       Displays related posts that share the same categories and taxonomies as the current post. Works like a Query Loop with inner blocks.
- * Version:           0.3.1
+ * Version:           0.4.0
  * Requires at least: 6.1
  * Requires PHP:      7.0
  * Author:            NExT-Season, WordPress Telex
@@ -31,14 +31,14 @@ add_action( 'init', 'next_related_posts_query_block_init' );
 
 /**
  * When the unitone theme is active, disable the standard blockGap control for
- * next/post-template via theme.json user settings. The unitone "gap" control
+ * next/post-template via the theme layer of theme.json. The unitone "gap" control
  * (supports.unitone.gap) handles spacing instead.
  */
 if ( ! function_exists( 'next_related_posts_query_disable_block_gap_for_unitone' ) ) {
 	/**
 	 * Disables the standard blockGap control for next/post-template when unitone is active.
 	 *
-	 * @param WP_Theme_JSON_Data $theme_json The user-level theme.json data object.
+	 * @param WP_Theme_JSON_Data $theme_json The theme-level theme.json data object.
 	 * @return WP_Theme_JSON_Data
 	 */
 	function next_related_posts_query_disable_block_gap_for_unitone( $theme_json ) {
@@ -52,7 +52,7 @@ if ( ! function_exists( 'next_related_posts_query_disable_block_gap_for_unitone'
 
 		return $theme_json->update_with(
 			array(
-				'version'  => 2,
+				'version'  => 3,
 				'settings' => array(
 					'blocks' => array(
 						'next/post-template' => array(
@@ -66,7 +66,7 @@ if ( ! function_exists( 'next_related_posts_query_disable_block_gap_for_unitone'
 		);
 	}
 }
-add_filter( 'wp_theme_json_data_user', 'next_related_posts_query_disable_block_gap_for_unitone' );
+add_filter( 'wp_theme_json_data_theme', 'next_related_posts_query_disable_block_gap_for_unitone' );
 
 /**
  * REST API endpoint for fetching related posts in the editor.
