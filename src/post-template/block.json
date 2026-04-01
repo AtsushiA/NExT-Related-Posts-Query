@@ -1,0 +1,31 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "next/post-template",
+	"version": "0.1.0",
+	"title": "NExT Post Template",
+	"category": "theme",
+	"parent": [ "next/related-posts-query" ],
+	"description": "Contains the template for each related post. Inner blocks define the layout for each result.",
+	"attributes": {
+		"layout": {
+			"type": "object",
+			"default": {
+				"type": "grid",
+				"columnCount": 3
+			}
+		}
+	},
+	"usesContext": [ "next/relatedPostIds" ],
+	"supports": {
+		"html": false,
+		"reusable": false,
+		"inserter": false,
+		"spacing": {
+			"blockGap": true
+		}
+	},
+	"textdomain": "next-related-posts-query",
+	"editorScript": "file:../index.js",
+	"render": "file:./render.php"
+}

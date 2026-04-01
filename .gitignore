@@ -1,0 +1,11 @@
+# Dependencies
+node_modules/
+
+# Build output
+build/
+
+# Plugin zip
+*.zip
+
+# Telex artefact
+artefact.xml

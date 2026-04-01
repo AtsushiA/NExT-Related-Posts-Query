@@ -1,0 +1,50 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "next/related-posts-query",
+	"version": "0.1.0",
+	"title": "NExT Related Posts Query",
+	"category": "theme",
+	"icon": "admin-post",
+	"description": "Displays related posts that share the same categories and taxonomies as the current post. Works like a Query Loop — add inner blocks to define the layout.",
+	"example": {},
+	"attributes": {
+		"numberOfPosts": {
+			"type": "number",
+			"default": 3
+		},
+		"postType": {
+			"type": "string",
+			"default": ""
+		},
+		"taxonomies": {
+			"type": "array",
+			"default": [],
+			"items": {
+				"type": "string"
+			}
+		}
+	},
+	"supports": {
+		"html": false,
+		"color": {
+			"background": true,
+			"text": true,
+			"link": true
+		},
+		"spacing": {
+			"margin": true,
+			"padding": true
+		},
+		"typography": {
+			"fontSize": true,
+			"lineHeight": true
+		},
+		"align": [ "wide", "full" ]
+	},
+	"textdomain": "next-related-posts-query",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"render": "file:./render.php"
+}

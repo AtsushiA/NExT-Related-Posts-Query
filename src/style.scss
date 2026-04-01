@@ -1,0 +1,14 @@
+.wp-block-next-related-posts-query {
+	max-width: 100%;
+}
+
+// Post template is the grid/flex container.
+// Default gap comes from the theme's --wp--style--block-gap; render.php inlines an explicit gap
+// value when the user has set blockGap in the editor, overriding this rule.
+.wp-block-next-post-template {
+	gap: var(--wp--style--block-gap);
+
+	@media (max-width: 600px) {
+		grid-template-columns: 1fr !important;
+	}
+}
