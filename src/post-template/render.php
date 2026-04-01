@@ -48,8 +48,8 @@ $block_gap = isset( $attributes['style']['spacing']['blockGap'] )
 
 if ( null !== $block_gap && '' !== $block_gap ) {
 	// Convert preset reference format "var:preset|spacing|30" → "var(--wp--preset--spacing--30)".
-	$gap_value = preg_replace( '/^var:preset\|([^|]+)\|(.+)$/', 'var(--wp--preset--$1--$2)', $block_gap );
-	$layout_style .= '--next-post-template--gap:' . $gap_value . ';';
+	$gap_value     = preg_replace( '/^var:preset\|([^|]+)\|(.+)$/', 'var(--wp--preset--$1--$2)', $block_gap );
+	$layout_style .= '--next-post-template--gap:' . esc_attr( $gap_value ) . ';';
 }
 
 $is_link = ! empty( $attributes['isLink'] );

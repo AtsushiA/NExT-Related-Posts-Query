@@ -2,16 +2,17 @@
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 3,
 	"name": "next/related-posts-query",
-	"version": "0.4.0",
+	"version": "0.4.1",
 	"title": "NExT Related Posts Query",
 	"category": "theme",
-	"icon": "admin-post",
-	"description": "Displays related posts that share the same categories and taxonomies as the current post. Works like a Query Loop — add inner blocks to define the layout.",
+"description": "Displays related posts that share the same categories and taxonomies as the current post. Works like a Query Loop — add inner blocks to define the layout.",
 	"example": {},
 	"attributes": {
 		"numberOfPosts": {
 			"type": "number",
-			"default": 3
+			"default": 3,
+			"minimum": 1,
+			"maximum": 12
 		},
 		"postType": {
 			"type": "string",
@@ -26,11 +27,13 @@
 		},
 		"orderby": {
 			"type": "string",
-			"default": "date"
+			"default": "date",
+			"enum": [ "date", "title" ]
 		},
 		"order": {
 			"type": "string",
-			"default": "DESC"
+			"default": "DESC",
+			"enum": [ "ASC", "DESC" ]
 		}
 	},
 	"supports": {

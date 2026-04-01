@@ -42,7 +42,9 @@ $query_post_type = ! empty( $post_type_attr ) && post_type_exists( $post_type_at
 	? $post_type_attr
 	: $current_post->post_type;
 
-// next_related_posts_query_build_tax_query() is defined in next-related-posts-query.php.
+if ( ! function_exists( 'next_related_posts_query_build_tax_query' ) ) {
+	return;
+}
 $tax_query = next_related_posts_query_build_tax_query( $current_post_id, $allowed_taxonomies );
 
 if ( empty( $tax_query ) ) {
