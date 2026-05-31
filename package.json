@@ -1,21 +1,32 @@
 {
-    "name": "next-related-posts-query",
-    "version": "0.4.1",
-    "description": "Displays related posts that share the same categories and taxonomies as the current post. Works like a Query Loop — add inner blocks to define the layout.",
-    "author": "telex block authoring tool",
-    "license": "GPL-2.0-or-later",
-    "main": "build/index.js",
-    "scripts": {
-        "build": "wp-scripts build --webpack-copy-php",
-        "format": "wp-scripts format",
-        "lint:css": "wp-scripts lint-style",
-        "lint:js": "wp-scripts lint-js",
-        "packages-update": "wp-scripts packages-update",
-        "plugin-zip": "wp-scripts plugin-zip",
-        "start": "wp-scripts start --blocks-manifest"
-    },
-    "devDependencies": {
-        "@wordpress/icons": "^12.0.0",
-        "@wordpress/scripts": "^30.15.0"
-    }
+  "name": "next-related-posts-query",
+  "version": "0.4.1",
+  "description": "Displays related posts that share the same categories and taxonomies as the current post. Works like a Query Loop — add inner blocks to define the layout.",
+  "author": "telex block authoring tool",
+  "license": "GPL-2.0-or-later",
+  "main": "build/index.js",
+  "scripts": {
+    "build": "wp-scripts build --webpack-copy-php",
+    "format": "wp-scripts format",
+    "lint:css": "wp-scripts lint-style",
+    "lint:js": "wp-scripts lint-js",
+    "packages-update": "wp-scripts packages-update",
+    "plugin-zip": "wp-scripts plugin-zip",
+    "start": "wp-scripts start --blocks-manifest",
+    "test:e2e": "npx playwright test",
+    "test:e2e:ui": "npx playwright test --ui",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.php": "composer run phpcs --"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.0",
+    "@wordpress/e2e-test-utils-playwright": "^0.23.0",
+    "@wordpress/env": "^10.14.0",
+    "@wordpress/icons": "^12.0.0",
+    "@wordpress/scripts": "^30.15.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.3.0"
+  }
 }

@@ -22,6 +22,9 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Registers the block using the metadata loaded from the `block.json` file.
  */
 if ( ! function_exists( 'next_related_posts_query_block_init' ) ) {
+	/**
+	 * Registers the block types using metadata from block.json files.
+	 */
 	function next_related_posts_query_block_init() {
 		register_block_type( __DIR__ . '/build/' );
 		register_block_type( __DIR__ . '/build/post-template/' );
@@ -72,56 +75,69 @@ add_filter( 'wp_theme_json_data_theme', 'next_related_posts_query_disable_block_
  * REST API endpoint for fetching related posts in the editor.
  */
 if ( ! function_exists( 'next_related_posts_query_register_rest_route' ) ) {
+	/**
+	 * Registers the REST API route for fetching related posts in the editor.
+	 */
 	function next_related_posts_query_register_rest_route() {
-		register_rest_route( 'next-related-posts-query/v1', '/related/(?P<post_id>\d+)', array(
-			'methods'             => 'GET',
-			'callback'            => 'next_related_posts_query_rest_callback',
-			'permission_callback' => function () {
-				return current_user_can( 'edit_posts' );
-			},
-			'args'                => array(
-				'post_id'    => array(
-					'required'          => true,
-					'validate_callback' => function ( $param ) {
-						return is_numeric( $param );
-					},
+		register_rest_route(
+			'next-related-posts-query/v1',
+			'/related/(?P<post_id>\d+)',
+			array(
+				'methods'             => 'GET',
+				'callback'            => 'next_related_posts_query_rest_callback',
+				'permission_callback' => function () {
+					return current_user_can( 'edit_posts' );
+				},
+				'args'                => array(
+					'post_id'    => array(
+						'required'          => true,
+						'validate_callback' => function ( $param ) {
+							return is_numeric( $param );
+						},
+					),
+					'per_page'   => array(
+						'default'           => 3,
+						'sanitize_callback' => 'absint',
+						'validate_callback' => function ( $param ) {
+							return is_numeric( $param ) && (int) $param > 0 && (int) $param <= 12;
+						},
+					),
+					'post_type'  => array(
+						'default'           => '',
+						'sanitize_callback' => 'sanitize_key',
+					),
+					'taxonomies' => array(
+						'default'           => '',
+						'sanitize_callback' => 'sanitize_text_field',
+					),
+					'orderby'    => array(
+						'default'           => 'date',
+						'sanitize_callback' => 'sanitize_key',
+						'validate_callback' => function ( $param ) {
+							return in_array( $param, array( 'date', 'title' ), true );
+						},
+					),
+					'order'      => array(
+						'default'           => 'DESC',
+						'sanitize_callback' => 'sanitize_text_field',
+						'validate_callback' => function ( $param ) {
+							return in_array( strtoupper( (string) $param ), array( 'ASC', 'DESC' ), true );
+						},
+					),
 				),
-				'per_page'   => array(
-					'default'           => 3,
-					'sanitize_callback' => 'absint',
-					'validate_callback' => function ( $param ) {
-						return is_numeric( $param ) && (int) $param > 0 && (int) $param <= 12;
-					},
-				),
-				'post_type'  => array(
-					'default'           => '',
-					'sanitize_callback' => 'sanitize_key',
-				),
-				'taxonomies' => array(
-					'default'           => '',
-					'sanitize_callback' => 'sanitize_text_field',
-				),
-				'orderby'    => array(
-					'default'           => 'date',
-					'sanitize_callback' => 'sanitize_key',
-					'validate_callback' => function ( $param ) {
-						return in_array( $param, array( 'date', 'title' ), true );
-					},
-				),
-				'order'      => array(
-					'default'           => 'DESC',
-					'sanitize_callback' => 'sanitize_text_field',
-					'validate_callback' => function ( $param ) {
-						return in_array( strtoupper( (string) $param ), array( 'ASC', 'DESC' ), true );
-					},
-				),
-			),
-		) );
+			)
+		);
 	}
 }
 add_action( 'rest_api_init', 'next_related_posts_query_register_rest_route' );
 
 if ( ! function_exists( 'next_related_posts_query_rest_callback' ) ) {
+	/**
+	 * REST API callback for returning related posts.
+	 *
+	 * @param WP_REST_Request $request The REST request object.
+	 * @return WP_REST_Response
+	 */
 	function next_related_posts_query_rest_callback( $request ) {
 		$post_id          = (int) $request->get_param( 'post_id' );
 		$per_page         = (int) $request->get_param( 'per_page' );
@@ -160,7 +176,7 @@ if ( ! function_exists( 'next_related_posts_query_rest_callback' ) ) {
 			'post_status'    => 'publish',
 			'posts_per_page' => $per_page,
 			'post__not_in'   => array( $post_id ),
-			'tax_query'      => $tax_query,
+			'tax_query'      => $tax_query, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
 			'orderby'        => $query_orderby,
 			'order'          => $query_order,
 		);
