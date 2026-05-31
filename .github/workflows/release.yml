@@ -22,7 +22,7 @@ jobs:
           VERSION="${GITHUB_REF#refs/tags/}"
           # ディレクトリ名と PHP ファイル名が大文字小文字で異なる場合に対応
           # ルートにある "Plugin Name:" ヘッダーを持つ PHP ファイルをメインファイルとする
-          PLUGIN_FILE=$(grep -rl "Plugin Name:" . --include="*.php" --max-depth=1 | head -1 | xargs basename)
+          PLUGIN_FILE=$(grep -l "Plugin Name:" *.php 2>/dev/null | head -1)
           echo "slug=${PLUGIN_SLUG}" >> "$GITHUB_OUTPUT"
           echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
           echo "file=${PLUGIN_FILE}" >> "$GITHUB_OUTPUT"
