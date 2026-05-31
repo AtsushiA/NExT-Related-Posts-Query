@@ -27,7 +27,10 @@ jobs:
         image: mysql:8.0
         env:
           MYSQL_ROOT_PASSWORD: root
-          # MYSQL_DATABASE を指定しない: install-wp-tests.sh の第6引数 true で DB 作成をスキップ
+          # MySQL サービスで DB を先に作成する。
+          # install-wp-tests.sh は第6引数 true (SKIP_DB_CREATE) で
+          # 既存 DB 確認プロンプト(read -p)をスキップする。
+          MYSQL_DATABASE: wordpress_test
         ports:
           - 3306:3306
         options: >-
@@ -49,11 +52,17 @@ jobs:
             php: '8.4'
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
       - uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
           tools: composer
           extensions: mysqli
+      - name: Build plugin assets
+        run: npm ci && npm run build
       - name: Reinstall Composer dependencies (with dev)
         run: |
           rm -rf vendor
@@ -70,15 +79,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: wordpress/plugin-check-action@v1
+      - uses: actions/setup-node@v4
         with:
-          exclude-directories: 'vendor,tests,node_modules'
-          categories: |
-            general
-            performance
-            accessibility
-            security
-          ignore-warnings: true
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Start wp-env
+        run: npx wp-env start
+      - name: Run Plugin Check
+        run: |
+          npx wp-env run cli wp plugin install plugin-check --activate
+          npx wp-env run cli wp plugin activate NExT-Related-Posts-Query || true
+          npx wp-env run cli wp plugin check NExT-Related-Posts-Query \
+            --exclude-directories=vendor,tests,node_modules \
+            --categories=general,performance,accessibility,security \
+            --ignore-warnings
 
   e2e:
     name: E2E Tests
@@ -94,10 +110,13 @@ jobs:
           php-version: '8.3'
           tools: composer
       - run: npm ci
+      - run: npm run build
       - run: composer install --no-interaction
       - run: npx playwright install chromium --with-deps
       - name: Start wp-env
         run: npx wp-env start
+      - name: Activate plugin in test environment
+        run: npx wp-env run tests-cli wp plugin activate NExT-Related-Posts-Query
       - name: Run E2E tests
         run: npx playwright test
       - uses: actions/upload-artifact@v4
