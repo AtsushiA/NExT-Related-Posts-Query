@@ -5,7 +5,9 @@ namespace NextRelatedPostsQuery\Tests\Integration;
 use WP_UnitTestCase;
 
 class SampleIntegrationTest extends WP_UnitTestCase {
-	public function test_plugin_is_active(): void {
-		$this->assertTrue( is_plugin_active( 'NExT-Related-Posts-Query/next-related-posts-query.php' ) );
+	public function test_blocks_are_registered(): void {
+		$registry = \WP_Block_Type_Registry::get_instance();
+		$this->assertTrue( $registry->is_registered( 'next/related-posts-query' ) );
+		$this->assertTrue( $registry->is_registered( 'next/post-template' ) );
 	}
 }
