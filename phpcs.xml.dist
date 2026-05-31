@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<ruleset name="NExT Related Posts Query">
+    <description>Custom ruleset for NExT Related Posts Query</description>
+
+    <!-- PHP ファイルのみを対象にする -->
+    <arg name="extensions" value="php"/>
+
+    <!-- 対象ファイル -->
+    <file>./next-related-posts-query.php</file>
+    <file>./src/</file>
+
+    <!-- 除外 -->
+    <exclude-pattern>./vendor/*</exclude-pattern>
+    <exclude-pattern>./node_modules/*</exclude-pattern>
+    <exclude-pattern>./tests/*</exclude-pattern>
+    <exclude-pattern>./build/*</exclude-pattern>
+
+    <!-- WordPress Coding Standards -->
+    <rule ref="WordPress"/>
+
+    <!-- Gutenberg block render.php はレンダーコールバック内ローカル変数を誤検知するため除外 -->
+    <rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+        <exclude-pattern>./src/render.php</exclude-pattern>
+        <exclude-pattern>./src/post-template/render.php</exclude-pattern>
+    </rule>
+
+    <!-- PHP互換性チェック -->
+    <rule ref="PHPCompatibilityWP"/>
+
+    <!-- PHP バージョン (Requires PHP: 7.0 だが phpcs は 8.3+ でチェック) -->
+    <config name="testVersion" value="7.0-"/>
+
+    <!-- テキストドメイン -->
+    <config name="text_domain" value="next-related-posts-query"/>
+
+    <!-- プレフィックス -->
+    <config name="prefixes" value="next_related_posts_query"/>
+    <config name="minimum_wp_version" value="6.3"/>
+</ruleset>

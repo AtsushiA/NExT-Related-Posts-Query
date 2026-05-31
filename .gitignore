@@ -1,7 +1,20 @@
 # Dependencies
+vendor/
 node_modules/
 
-# Build output
+# wp-env
+.wp-env.override.json
+debug.log
+db.sql
+
+# Test cache
+.phpunit.result.cache
+test-results/
+playwright-report/
+blob-report/
+tests/e2e/.auth/
+
+# Build
 build/
 
 # Plugin zip
