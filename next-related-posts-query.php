@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       NExT Related Posts Query Block
  * Description:       Displays related posts that share the same categories and taxonomies as the current post. Works like a Query Loop with inner blocks.
- * Version:           0.4.1
+ * Version:           0.4.2
  * Requires at least: 6.3
  * Requires PHP:      7.0
  * Author:            NExT-Season, WordPress Telex
