@@ -63,8 +63,10 @@ jobs:
             --exclude='.github' \
             --exclude='.husky' \
             --exclude='node_modules' \
+            --exclude='vendor' \
             --exclude='tests' \
             --exclude='src' \
+            --exclude='bin' \
             --exclude='.wp-env.json' \
             --exclude='.wp-env.override.json' \
             --exclude='package.json' \
