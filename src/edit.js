@@ -39,13 +39,7 @@ const TEMPLATE = [
 ];
 
 export default function Edit( { attributes, setAttributes } ) {
-	const {
-		numberOfPosts,
-		postType,
-		taxonomies,
-		orderby,
-		order,
-	} = attributes;
+	const { numberOfPosts, postType, taxonomies, orderby, order } = attributes;
 
 	// Combined sort value used by the SelectControl: "orderby/order".
 	const sortValue = `${ orderby }/${ order }`;
@@ -55,7 +49,7 @@ export default function Edit( { attributes, setAttributes } ) {
 	};
 
 	const [ relatedPosts, setRelatedPosts ] = useState( [] );
-	const [ isLoading, setIsLoading ]       = useState( true );
+	const [ isLoading, setIsLoading ] = useState( true );
 
 	const postId = useSelect(
 		( select ) => select( 'core/editor' )?.getCurrentPostId?.() || 0,
@@ -63,7 +57,8 @@ export default function Edit( { attributes, setAttributes } ) {
 	);
 
 	const currentPostType = useSelect(
-		( select ) => select( 'core/editor' )?.getCurrentPost?.()?.type || 'post',
+		( select ) =>
+			select( 'core/editor' )?.getCurrentPost?.()?.type || 'post',
 		[]
 	);
 
@@ -146,9 +141,12 @@ export default function Edit( { attributes, setAttributes } ) {
 		setIsLoading( true );
 
 		const params = new URLSearchParams( { per_page: numberOfPosts } );
-		if ( postType ) params.set( 'post_type', postType );
-		if ( taxonomies.length > 0 )
+		if ( postType ) {
+			params.set( 'post_type', postType );
+		}
+		if ( taxonomies.length > 0 ) {
 			params.set( 'taxonomies', taxonomies.join( ',' ) );
+		}
 		params.set( 'orderby', orderby );
 		params.set( 'order', order );
 
@@ -193,16 +191,10 @@ export default function Edit( { attributes, setAttributes } ) {
 		<>
 			<InspectorControls>
 				<PanelBody
-					title={ __(
-						'Query Settings',
-						'next-related-posts-query'
-					) }
+					title={ __( 'Query Settings', 'next-related-posts-query' ) }
 				>
 					<SelectControl
-						label={ __(
-							'Post Type',
-							'next-related-posts-query'
-						) }
+						label={ __( 'Post Type', 'next-related-posts-query' ) }
 						value={ postType }
 						options={ postTypeOptions }
 						onChange={ ( value ) =>
@@ -275,19 +267,31 @@ export default function Edit( { attributes, setAttributes } ) {
 						value={ sortValue }
 						options={ [
 							{
-								label: __( '投稿順 (最新から)', 'next-related-posts-query' ),
+								label: __(
+									'投稿順 (最新から)',
+									'next-related-posts-query'
+								),
 								value: 'date/DESC',
 							},
 							{
-								label: __( '投稿順 (過去から)', 'next-related-posts-query' ),
+								label: __(
+									'投稿順 (過去から)',
+									'next-related-posts-query'
+								),
 								value: 'date/ASC',
 							},
 							{
-								label: __( 'A → Z', 'next-related-posts-query' ),
+								label: __(
+									'A → Z',
+									'next-related-posts-query'
+								),
 								value: 'title/ASC',
 							},
 							{
-								label: __( 'Z → A', 'next-related-posts-query' ),
+								label: __(
+									'Z → A',
+									'next-related-posts-query'
+								),
 								value: 'title/DESC',
 							},
 						] }

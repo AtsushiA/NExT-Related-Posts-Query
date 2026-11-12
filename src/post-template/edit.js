@@ -17,7 +17,7 @@ import { useMemo } from '@wordpress/element';
 
 export default function Edit( { attributes, setAttributes } ) {
 	const { layout = {}, isLink = false } = attributes;
-	const layoutType  = layout.type        || 'grid';
+	const layoutType = layout.type || 'grid';
 	const columnCount = layout.columnCount || 3;
 
 	const previewStyle = useMemo( () => {
@@ -74,9 +74,7 @@ export default function Edit( { attributes, setAttributes } ) {
 			</BlockControls>
 
 			<InspectorControls>
-				<PanelBody
-					title={ __( 'Layout', 'next-related-posts-query' ) }
-				>
+				<PanelBody title={ __( 'Layout', 'next-related-posts-query' ) }>
 					{ layoutType === 'grid' && (
 						<RangeControl
 							label={ __(
@@ -101,9 +99,16 @@ export default function Edit( { attributes, setAttributes } ) {
 							'ブロックリンクを使用する',
 							'next-related-posts-query'
 						) }
-						help={ isLink
-							? __( '各投稿カード全体がリンクになります。', 'next-related-posts-query' )
-							: __( '有効にすると投稿カード全体がクリッカブルになります。', 'next-related-posts-query' )
+						help={
+							isLink
+								? __(
+										'各投稿カード全体がリンクになります。',
+										'next-related-posts-query'
+								  )
+								: __(
+										'有効にすると投稿カード全体がクリッカブルになります。',
+										'next-related-posts-query'
+								  )
 						}
 						checked={ isLink }
 						onChange={ ( value ) =>
