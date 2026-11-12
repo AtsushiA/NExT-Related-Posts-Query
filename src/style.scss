@@ -3,12 +3,15 @@
 }
 
 // Post template is the grid/flex container.
-// Default gap comes from the theme's --wp--style--block-gap; render.php inlines an explicit gap
-// value when the user has set blockGap in the editor, overriding this rule.
+// Default gap comes from the theme's --wp--style--block-gap;
+// render.php inlines an explicit gap value when the user has set blockGap
+// in the editor, overriding this rule.
 .wp-block-next-post-template {
 	// Priority: unitone gap > our blockGap setting > theme blockGap.
 	// --unitone--gap is injected by the unitone theme's render_block filter.
-	// --next-post-template--gap is set by render.php when blockGap attribute is present.
+	// --next-post-template--gap is set by render.php when blockGap attribute
+	// is present.
+	// stylelint-disable-next-line @stylistic/max-line-length
 	gap: var(--unitone--gap, var(--next-post-template--gap, var(--wp--style--block-gap)));
 
 	@media (max-width: 600px) {
@@ -29,12 +32,12 @@
 
 	// Pass pointer events through card content to the overlay anchor.
 	// Exclude the overlay link itself so it can still receive clicks.
-	> *:not( .wp-block-next-post-template__item-link ) {
+	> *:not(.wp-block-next-post-template__item-link) {
 		pointer-events: none;
 	}
 
 	// Re-enable pointer events for interactive elements inside the card.
-	a:not( .wp-block-next-post-template__item-link ),
+	a:not(.wp-block-next-post-template__item-link),
 	button {
 		pointer-events: auto;
 	}
